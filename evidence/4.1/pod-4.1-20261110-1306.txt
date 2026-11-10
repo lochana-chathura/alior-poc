@@ -1,0 +1,33 @@
+== 2026-11-10T07:36:15Z  GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts/1.0.0/accounts (3 tries)
+  ok   try 1 -> 200, x-mock-version=v1
+  ok   try 1 gateway header x-envoy-upstream-service-time=43
+  ok   try 2 -> 200, x-mock-version=v1
+  ok   try 2 gateway header x-envoy-upstream-service-time=42
+  ok   try 3 -> 200, x-mock-version=v1
+  ok   try 3 gateway header x-envoy-upstream-service-time=41
+== response of try 3
+HTTP/2 200 
+date: Tue, 10 Nov 2026 07:36:18 GMT
+content-type: application/json
+content-length: 173
+x-mock-version: v1
+x-envoy-upstream-service-time: 41
+x-request-id: 5efbc2c4-160f-420c-8a89-16c8361cb98a
+x-azure-ref: 20261110T073618Z-16985bcd544dgqsqhC1MAAyh280000001ep0000000003xv5
+x-cache: CONFIG_NOCACHE
+accept-ranges: bytes
+
+{"service": "mock", "version": "v1", "path": "/accounts", "method": "GET", "host": "pod-b-vm", "port": 8081, "body_bytes": 0, "body_md5": null, "ts": "2026-11-10T07:36:18Z"}
+  ok   backend that answered: pod-b-vm 8081 /accounts (mock v1 on the VM)
+== GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/nope/1.0.0/accounts (not published)
+HTTP/2 404 
+date: Tue, 10 Nov 2026 07:36:19 GMT
+content-type: application/json
+content-length: 21
+x-request-id: 7cb9b3ba-c5cc-4042-9f6c-4d058b073f31
+x-azure-ref: 20261110T073618Z-16985bcd544snw6nhC1MAAyxu00000001grg000000002qgd
+x-cache: CONFIG_NOCACHE
+
+{"error":"Not Found"}
+  ok   unpublished path -> 404
+POD 4.1 PASSED

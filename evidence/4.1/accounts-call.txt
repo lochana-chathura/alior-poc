@@ -1,0 +1,14 @@
+# PoD 4.1 evidence, 2026-11-10T06:07:13Z
+$ curl -si https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts/1.0.0/accounts
+HTTP/2 200 
+date: Tue, 10 Nov 2026 06:07:14 GMT
+content-type: application/json
+content-length: 173
+x-mock-version: v1
+x-envoy-upstream-service-time: 45
+x-request-id: 8a3ac43e-eede-47aa-9e09-386deb92fd89
+x-azure-ref: 20261110T060714Z-156d8c6dfc65lsqzhC1SG17kw40000001dbg000000005zqv
+x-cache: CONFIG_NOCACHE
+accept-ranges: bytes
+
+{"service": "mock", "version": "v1", "path": "/accounts", "method": "GET", "host": "pod-b-vm", "port": 8081, "body_bytes": 0, "body_md5": null, "ts": "2026-11-10T06:07:14Z"}

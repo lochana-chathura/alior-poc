@@ -26,7 +26,7 @@ Base platform (phases 1 to 3) is up: `make health`, `make gate`, `make test POD=
 | 3.5 | Until the data has been successfully retrieved from the external service and loaded into memory, the Gateway must return OUT_OF_SERVICE in its health check. | | Not started |  |
 | 3.6 | Latency overhead introduced by integrating the custom security layer. | | Not started |  |
 | **4** | **API Routing and Addressing** | Technical Demonstration | | Live; 4.4 slide |
-| 4.1 | Routing a client (i.e. an application) to a microservice through the Gateway. | | Not started |  |
+| 4.1 | Routing a client (i.e. an application) to a microservice through the Gateway. | | Done | 2026-11-10: GET /accounts/1.0.0/accounts via Front Door returned 200 from mock v1 (pod-b-vm:8081) with the gateway's Envoy header (x-envoy-upstream-service-time). An unpublished path (GET /nope/1.0.0/accounts) returns 404. tests/pod-4.1.sh (make test POD=4.1, curl only), evidence/4.1. |
 | 4.2 | Communication between microservices within a cluster, e.g. using Kubernetes mechanisms. | | Not started |  |
 | 4.3 | Gateway behavior when the target microservice does not respond and when the configured timeout (30 seconds) expires during communication. | | Not started |  |
 | 4.4 | Presenting how communication works in a multi-cluster architecture (implementation in the demo environment is not necessarily required). | | Slide | bank: implementation not required |

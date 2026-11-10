@@ -1,0 +1,11 @@
+# PoD 4.1 evidence: unpublished path, 2026-11-10T06:15:49Z
+$ curl -si https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/nope/1.0.0/accounts
+HTTP/2 404 
+date: Tue, 10 Nov 2026 06:15:50 GMT
+content-type: application/json
+content-length: 21
+x-request-id: ca8b0491-447f-44c5-9c8d-b15658b2c6cb
+x-azure-ref: 20261110T061550Z-185bc7f6d98jjsmmhC1SG1gp8c00000024v0000000005c63
+x-cache: CONFIG_NOCACHE
+
+{"error":"Not Found"}
