@@ -1,0 +1,13 @@
+# 2026-11-10T07:53:34Z  GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts/1.0.0/accounts
+HTTP/2 200 
+date: Tue, 10 Nov 2026 07:53:34 GMT
+content-type: application/json
+content-length: 173
+x-mock-version: v1
+x-envoy-upstream-service-time: 5
+x-request-id: 2324d4e8-0688-4442-a659-b6cf4f4dd321
+x-azure-ref: 20261110T075334Z-164b64c4f47lmdqkhC1MAA15aw0000000e500000000058pv
+x-cache: CONFIG_NOCACHE
+accept-ranges: bytes
+
+{"service": "mock", "version": "v1", "path": "/accounts", "method": "GET", "host": "pod-b-vm", "port": 8081, "body_bytes": 0, "body_md5": null, "ts": "2026-11-10T07:53:34Z"}

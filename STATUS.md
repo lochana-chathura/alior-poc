@@ -31,7 +31,7 @@ Base platform (phases 1 to 3) is up: `make health`, `make gate`, `make test POD=
 | 4.3 | Gateway behavior when the target microservice does not respond and when the configured timeout (30 seconds) expires during communication. | | Not started |  |
 | 4.4 | Presenting how communication works in a multi-cluster architecture (implementation in the demo environment is not necessarily required). | | Slide | bank: implementation not required |
 | 4.5 | DNS support. | | Not started |  |
-| 4.6 | Path prefix stripping (strip prefix). | | Not started |  |
+| 4.6 | Path prefix stripping (strip prefix). | | Done | 2026-11-10: Called GET /accounts/1.0.0/accounts through Front Door. The mock echoed the path /accounts, so the gateway stripped the /accounts/1.0.0 prefix. tests/pod-4.6.sh (make test POD=4.6, curl only), evidence/4.6. |
 | 4.7 | Route conflicts and priorities, e.g. for microservice URLs /transfers versus /transfers/instant. | | Not started |  |
 | 4.8 | Multiple routes to a single microservice. | | Not started |  |
 | 4.9 | Sticky sessions (session affinity). | | Not started | CHECK: not in the Policy Hub catalogue (2026-11-02) |
