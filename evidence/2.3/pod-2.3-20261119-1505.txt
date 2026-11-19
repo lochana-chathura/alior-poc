@@ -1,0 +1,9 @@
+== 2026-11-19T09:35:51Z  pipeline: accounts 1.0.0 -> 2.0.0 on http://10.20.16.4:8082
+  version 2.0.0 exists (85500dc3-4ccc-4da7-9fd3-e6aa5909c696), updating it
+  endpoint set to http://10.20.16.4:8082 -> 200
+  deploy to pod-a-gw + pod-b-gw -> 201
+  publish -> 400 (400 = already published)
+== both versions through Front Door (waiting 15 s for the gateways)
+  ok   accounts 1.0.0 answers from mock v1
+  ok   accounts 2.0.0 answers from mock v2
+POD 2.3 PASSED
