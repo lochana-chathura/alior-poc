@@ -1,0 +1,27 @@
+== 2026-11-19T09:29:51Z  APIM audit log entries for API routes (control plane pod in pod-a-aks)
+  2026-11-19 09:18:48 UTC  by admin    created  routes /routes/1.0.0 
+  2026-11-19 09:18:50 UTC  by admin    updated  routes /routes/1.0.0 
+  2026-11-19 09:18:54 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-a-gw
+  2026-11-19 09:18:54 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-b-gw
+  2026-11-19 09:18:55 UTC  by admin    lifecycle-changed routes /routes/1.0.0 
+  2026-11-19 09:18:59 UTC  by admin    updated  routes /routes/1.0.0 
+  2026-11-19 09:19:02 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-a-gw
+  2026-11-19 09:19:02 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-b-gw
+  2026-11-19 09:20:45 UTC  by admin    updated  routes /routes/1.0.0 
+  2026-11-19 09:20:50 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-a-gw
+  2026-11-19 09:20:50 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-b-gw
+  2026-11-19 09:21:26 UTC  by admin    updated  routes /routes/1.0.0 
+  2026-11-19 09:21:31 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-a-gw
+  2026-11-19 09:21:31 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-b-gw
+  2026-11-19 09:23:10 UTC  by admin    updated  routes /routes/1.0.0 
+  2026-11-19 09:23:14 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-a-gw
+  2026-11-19 09:23:14 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-b-gw
+  2026-11-19 09:26:02 UTC  by admin    updated  routes /routes/1.0.0 
+  2026-11-19 09:26:07 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-a-gw
+  2026-11-19 09:26:07 UTC  by admin    DEPLOY   routes /routes/1.0.0 pod-b-gw
+  ok   audit log names who changed routes and when
+== Publisher revision history for routes
+  1795080193000  Revision 5   deployed to: -  (2026-11-19T09:23:12Z policies)
+  1795080366000  Revision 6   deployed to: pod-a-gw,pod-b-gw  (2026-11-19T09:26:04Z policies)
+  ok   revision history listed
+POD 2.5 PASSED
