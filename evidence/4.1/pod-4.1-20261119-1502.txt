@@ -1,0 +1,41 @@
+== 2026-11-19T09:32:26Z  GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts/1.0.0/accounts (3 tries)
+  ok   try 1 -> 200, x-mock-version=v1
+  ok   try 1 gateway header x-envoy-upstream-service-time=2
+  ok   try 1 policy header x-pod-gateway=wso2-api-platform-gateway
+  ok   try 2 -> 200, x-mock-version=v1
+  ok   try 2 gateway header x-envoy-upstream-service-time=2
+  ok   try 2 policy header x-pod-gateway=wso2-api-platform-gateway
+  ok   try 3 -> 200, x-mock-version=v1
+  ok   try 3 gateway header x-envoy-upstream-service-time=39
+  ok   try 3 policy header x-pod-gateway=wso2-api-platform-gateway
+== response of try 3
+HTTP/2 200 
+date: Thu, 19 Nov 2026 09:32:28 GMT
+content-type: application/json
+content-length: 173
+x-mock-version: v1
+x-envoy-upstream-service-time: 39
+x-pod-gateway: wso2-api-platform-gateway
+x-request-id: 1e8c14a0-49d8-403c-a282-6b08a35c033c
+x-azure-ref: 20261119T093228Z-r15794d8f9c68l4qhC1MAAxau40000000bu000000000b0ad
+x-cache: CONFIG_NOCACHE
+accept-ranges: bytes
+
+{"service": "mock", "version": "v1", "path": "/accounts", "method": "GET", "host": "pod-b-vm", "port": 8081, "body_bytes": 0, "body_md5": null, "ts": "2026-11-19T09:32:28Z"}
+  ok   backend that answered: pod-b-vm 8081 /accounts (mock v1 on the VM)
+== GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/nope/1.0.0/accounts (not published)
+HTTP/2 404 
+date: Thu, 19 Nov 2026 09:32:29 GMT
+content-type: application/json
+content-length: 21
+x-request-id: abeca8c0-0de1-45d1-bb2b-fb5e92b07a81
+x-azure-ref: 20261119T093229Z-r15794d8f9c69hmvhC1MAAnxqc0000000ddg000000000d6q
+x-cache: CONFIG_NOCACHE
+
+{"error":"Not Found"}
+  ok   unpublished path -> 404
+== which gateway answered (x-request-id looked up in the router access logs)
+  ok   try 1 (x-request-id efaa3d90-61a2-4032-bf6b-983352f523c1) was served by the gateway in region B (pod-b-gw)
+  ok   try 2 (x-request-id eeee099e-854c-42e4-87bb-c786b0aae441) was served by the gateway in region B (pod-b-gw)
+  ok   try 3 (x-request-id 1e8c14a0-49d8-403c-a282-6b08a35c033c) was served by the gateway in region A (pod-a-gw)
+POD 4.1 PASSED
