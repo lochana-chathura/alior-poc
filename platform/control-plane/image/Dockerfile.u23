@@ -1,0 +1,21 @@
+# APIM 4.7.0 at update level 23, plus the PostgreSQL JDBC driver.
+# Starts from the public 4.7.0 image (Ubuntu 24.04, JDK 25) and swaps the product folder for the updated pack, the same
+# way WSO2's own Dockerfile (wso2/docker-apim v4.7.0.x) lays it out: product in /home/wso2carbon/wso2am-4.7.0,
+# synapse-configs and executionplans copied to /home/wso2carbon/wso2-tmp for the entrypoint.
+# The pack wso2am-4.7.0.23.zip comes from the WSO2 update tool. It is subscription content and is never committed:
+# build-u23.sh puts it next to this file in a temporary build folder and runs az acr build there.
+FROM docker.io/library/alpine:3.22 AS pack
+RUN apk add --no-cache unzip
+COPY wso2am-4.7.0.23.zip /tmp/pack.zip
+RUN unzip -q /tmp/pack.zip -d /out && grep -q '"update-level": "23"' /out/wso2am-4.7.0/updates/config.json
+
+FROM docker.io/wso2/wso2am:4.7.0
+ARG PG_JDBC=42.7.7
+USER root
+RUN rm -rf ${WSO2_SERVER_HOME} /home/wso2carbon/wso2-tmp/synapse-configs /home/wso2carbon/wso2-tmp/executionplans
+COPY --from=pack --chown=wso2carbon:wso2 /out/wso2am-4.7.0 ${WSO2_SERVER_HOME}
+RUN cp -r ${WSO2_SERVER_HOME}/repository/deployment/server/synapse-configs /home/wso2carbon/wso2-tmp/ \
+ && cp -r ${WSO2_SERVER_HOME}/repository/deployment/server/executionplans /home/wso2carbon/wso2-tmp/
+ADD --chown=wso2carbon:wso2 https://repo1.maven.org/maven2/org/postgresql/postgresql/${PG_JDBC}/postgresql-${PG_JDBC}.jar \
+    ${WSO2_SERVER_HOME}/repository/components/lib/postgresql-${PG_JDBC}.jar
+USER 10001
