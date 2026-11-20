@@ -1,0 +1,10 @@
+== 2026-11-20T07:59:07Z  1. backend not there: GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/nobackend/1.0.0/accounts
+     upstream connect error or disconnect/reset before headers. reset reason: remote connection failure
+     503 0.643474
+  ok   gateway answered 503 upstream connect error in 0.643474s
+== 2. backend too slow, through Front Door (gateway timeout 30 s, Front Door 60 s)
+     delay=5000 ms -> HTTP 200 in 5.645898s  body={"service": "mock", "version": "v1", "path": "/accounts", "method": "GET", "host
+  ok   5 s delay is inside the timeout: 200
+     delay=35000 ms -> HTTP 504 in 30.580225s  body=upstream request timeout
+  ok   35 s delay: the gateway gave up after 30.580225s with 504 upstream request timeout
+POD 4.3 PASSED

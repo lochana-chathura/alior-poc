@@ -115,8 +115,8 @@ APIs are created and deployed from the control plane (the Publisher or its REST 
 **Plan.** Create a role such as `team-b` and a user with it. Limit `pod-b-gw` to that role. Show that a publisher without the role can't deploy to gateway B. On the Kubernetes side, show a role that can only touch the `wso2-gw` namespace (`kubectl auth can-i`).
 
 ### 2.5 Audit of configuration changes
-**Status.** To do.
-**What we know so far (checked 2026-11-19).**
+**Ask.** Audit configuration changes, for example who added a route and when.
+**How we do it (checked 2026-11-19).**
 - APIM writes an audit log (`repository/logs/audit.log` in the control plane pod). API actions are logged with who did them, for example `{"performedBy":"...","action":"deployed","type":"API"}`.
 - That file lives inside the pod. The pod restarts every morning with the office-hours schedule, so the log only covers the current day. For a real audit trail it would have to be shipped somewhere that lasts.
 - Kubernetes audit logs are not collected. Neither cluster has diagnostic settings.
@@ -150,14 +150,23 @@ The answer is 200 from mock v1. A path that isn't published (`/nope/1.0.0/accoun
 **Ask.** What the gateway does when the backend doesn't answer, and when the configured timeout (30 seconds) runs out.
 **How we do it.**
 - **Backend not there.** The test API `nobackend` points at a port where nothing listens. The gateway answers **503** straight away with `upstream connect error ... remote connection failure`.
-- **Backend too slow.** The gateway's backend timeout is set in its config as `route_timeout_ms`. It is **60 seconds** today (the default). With a 65 second delay the gateway gives up after exactly 60 seconds with **504** `upstream request timeout`. With a 5 second delay the call succeeds.
-**How to show it.** Run `make test POD=4.3` (about 70 seconds). The slow case is called inside region A, because Front Door has its own 30 second limit and would answer first if the call went through it.
-**Proof.** `tests/pod-4.3.sh`, `evidence/4.3/`. Passed 2026-11-19.
-**Status.** Partly ready. The behaviour is shown, but with 60 seconds and not the bank's 30.
-**What is left for exactly 30 seconds.**
-- Set `route_timeout_ms = 30000` in the gateway config (`platform/gateway/region-*/gateway-values.yaml`). This goes through Argo CD and Minura's repo.
-- Raise Front Door's origin timeout above 30 seconds (for example 60), so the gateway's 504 reaches the client and not Front Door's.
-- Setting the timeout per API from the Publisher doesn't work in our version. We set the standard endpoint timeout (10 seconds) on a test API and the gateway ignored it. WSO2's gateway supports a per-API timeout (`resilience.timeout`), but our APIM 4.7.0 doesn't pass it on.
+- **Backend too slow.** The gateway's backend timeout is `route_timeout_ms`. We set it to **30 seconds** in both regions on 2026-11-20 (the chart default is 60). With a 35 second delay the gateway gives up after 30 seconds with **504** `upstream request timeout`. With a 5 second delay the call succeeds.
+- **Front Door's own limit.** Front Door gives up on its own after its origin timeout. We raised it from 30 to 60 seconds, so it is always longer than the gateway's and the client sees the gateway's answer.
+**Where the timeout is configured.** In Git, in `platform/gateway/region-a/gateway-values.yaml` (and region-b):
+```yaml
+        router:
+          upstream:
+            timeouts:
+              route_timeout_ms: 30000
+```
+Argo CD applies the change and the gateway operator restarts the gateway pods one at a time, so traffic keeps flowing. On 2026-11-20 the change was live in both regions in about 2 minutes. The live value can be read in the cluster with `kubectl -n wso2-gw get cm pod-a-gw-gw-gateway-config -o yaml | grep route_timeout_ms`. Front Door's timeout is set in `infra/azure/frontdoor.sh`.
+**How to show it.**
+1. Show the setting in Git (GitHub, `gateway-values.yaml`).
+2. Call through Front Door with the header `x-mock-delay-ms: 35000`. The answer is 504 `upstream request timeout` after 30 seconds, a plain text body with the gateway's `x-request-id`. An HTML page with `OriginTimeout` would mean Front Door answered instead.
+3. Or run `make test POD=4.3` (about 40 seconds).
+**Setting it per API.** Setting the timeout per API from the Publisher doesn't work in our version. We set the standard endpoint timeout (10 seconds) on a test API and the gateway ignored it. WSO2's gateway supports a per-API timeout (`resilience.timeout`), but APIM 4.7.0 GA did not pass it on. Not tested again on update 23.
+**Proof.** `tests/pod-4.3.sh`, `evidence/4.3/`. The gateway's 30 second timeout was seen on 2026-11-20 (504 after 30.01 s, called inside region A).
+**Status.** Ready.
 
 ### 4.4 Multi-cluster communication
 **Status.** Presentation. The bank said a live setup is not required. Use the L0 and L1 diagrams.
