@@ -180,9 +180,9 @@ Argo CD applies the change and the gateway operator restarts the gateway pods on
 **Ask.** Remove a path prefix before forwarding to the backend.
 **How we do it.** The gateway removes the API context and version by default. The client calls `/accounts/1.0.0/accounts` and the backend receives `/accounts`.
 **How to show it.** Run `make test POD=4.6`. Point at the `path` field in the mock's answer.
-**Configured rewrite.** The API `accounts-rewrite` has the `request-rewrite` policy (API level) with `ReplacePrefixMatch` set to `/legacy/accounts`. The client calls `/accounts-rewrite/1.0.0/accounts` and the backend receives `/legacy/accounts`.
+**Configured rewrite.** In the API `accounts-rewrite`, only the route `GET /accounts` has the `request-rewrite` policy (operation level since 2026-11-20, which the control plane update made possible), with `ReplacePrefixMatch` set to `/legacy/accounts`. The client calls `/accounts-rewrite/1.0.0/accounts` and the backend receives `/legacy/accounts`. The other routes of the same API keep their path, for example `POST /accounts-rewrite/1.0.0/transfers` arrives as `/transfers`. Show the policy in the Publisher under the API's **Policies**, on the `GET /accounts` route.
 **Why the earlier try failed.** On 2026-11-13 the policy was saved with type `ReplaceFullPath` but the path in the `replacePrefixMatch` field. That type needs a `replaceFullPath` value, so the policy did nothing. It was fixed on 2026-11-19.
-**Proof.** `tests/pod-4.6.sh`, `evidence/4.6/` (`backend-path.txt` for the default, `configured-rewrite.txt` for the policy). Passed 2026-11-19.
+**Proof.** `tests/pod-4.6.sh`, `evidence/4.6/` (`backend-path.txt` for the default, `configured-rewrite.txt` for the policy). Passed 2026-11-20 with the route-level policy.
 **Status.** Ready.
 
 ### 4.7 Route conflicts and priorities

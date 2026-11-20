@@ -18,13 +18,19 @@ echo "  client sent : $REQ"
 echo "  backend got : ${got:-unreadable}"
 [ "$got" = /accounts ] && ok "prefix /accounts/1.0.0 stripped before the backend" || bad "backend path is '${got:-unreadable}' (want /accounts)"
 [ "$got" != "$REQ" ] && ok "backend path differs from the client path" || bad "backend received the unstripped path"
-# Configured rewrite: API accounts-rewrite carries request-rewrite (ReplacePrefixMatch to /legacy/accounts, fixed 2026-11-19).
+# Configured rewrite: in API accounts-rewrite only the route GET /accounts carries request-rewrite (ReplacePrefixMatch to
+# /legacy/accounts, an operation-level policy since 2026-11-20). Its other routes keep their own path.
 REQ2=/accounts-rewrite/1.0.0/accounts
-echo "== client calls GET $FD$REQ2 (request-rewrite policy on the API)"
+echo "== client calls GET $FD$REQ2 (request-rewrite policy on this route only)"
 curl -s -m 20 -D "$T/h2" -o "$T/b2" "$FD$REQ2"
 { echo "# $(date -u +%FT%TZ)  GET $FD$REQ2"; cat "$T/h2"; cat "$T/b2"; echo; } | tee evidence/4.6/configured-rewrite.txt
 got2=$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["path"])' "$T/b2" 2>/dev/null)
 echo "  client sent : $REQ2"
 echo "  backend got : ${got2:-unreadable}"
 [ "$got2" = /legacy/accounts ] && ok "configured rewrite: /accounts forwarded as /legacy/accounts" || bad "backend path is '${got2:-unreadable}' (want /legacy/accounts)"
+REQ3=/accounts-rewrite/1.0.0/transfers
+echo "== client calls POST $FD$REQ3 (same API, route without the policy)"
+got3=$(curl -s -m 20 -X POST "$FD$REQ3" | python3 -c 'import json,sys;print(json.load(sys.stdin)["path"])' 2>/dev/null)
+echo "  backend got : ${got3:-unreadable}"
+[ "$got3" = /transfers ] && ok "other route of the same API is not rewritten: /transfers" || bad "backend path is '${got3:-unreadable}' (want /transfers)"
 [ $fail = 0 ] && echo "POD 4.6 PASSED" || { echo "POD 4.6 FAILED"; exit 1; }
