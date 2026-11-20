@@ -13,10 +13,10 @@ spec:
         releaseName: apim
         valueFiles:
           - $values/platform/control-plane/values.yaml
-    - repoURL: https://github.com/MinuraKariyawasam/alior-poc.git
+    - repoURL: https://github.com/lochana-chathura/alior-poc.git
       targetRevision: main
       ref: values
-    - repoURL: https://github.com/MinuraKariyawasam/alior-poc.git
+    - repoURL: https://github.com/lochana-chathura/alior-poc.git
       targetRevision: main
       path: platform/control-plane
       directory: {include: apim-internal-lb.yaml}

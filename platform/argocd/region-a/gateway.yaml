@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/MinuraKariyawasam/alior-poc.git
+    repoURL: https://github.com/lochana-chathura/alior-poc.git
     targetRevision: main
     path: platform/gateway/region-a
   destination: {server: https://kubernetes.default.svc, namespace: wso2-gw}
