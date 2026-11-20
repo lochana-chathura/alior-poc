@@ -3,9 +3,9 @@
 wso2:
   deployment:
     image:
-      registry: podacralior.azurecr.io      # public wso2/wso2am:4.7.0 + PostgreSQL JDBC driver, built by platform/control-plane/image
+      registry: podacralior.azurecr.io      # APIM 4.7.0 update level 23 + PostgreSQL JDBC driver (image/Dockerfile.u23). Rollback: tag 4.7.0-pg1
       repository: wso2am
-      tag: 4.7.0-pg1
+      tag: 4.7.0.23-pg1
     nodeSelector:
       agentpool: wso2cp                      # its own node; the chart has no tolerations, so the pool is untainted
   apim:
