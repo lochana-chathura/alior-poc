@@ -30,6 +30,9 @@ data:
           access_logs:
             enabled: true
             format: json
+          upstream:
+            timeouts:
+              route_timeout_ms: 30000      # PoD 4.3: wait at most 30 s for the backend, then 504 (chart default 60000). Front Door's origin timeout is 60 s, above this
         policy_configurations:
           jwtauth_v1:
             keymanagers:                   # read by the Policy Hub jwt-auth policy: trust tokens issued by our control plane (PoD 6.11)
