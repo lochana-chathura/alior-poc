@@ -1,0 +1,10 @@
+== 2026-11-20T09:08:42Z  routes through Front Door, all expected to reach: v1 pod-b-vm 8081
+  ok   GET /accounts/1.0.0/accounts -> 200 from v1 pod-b-vm 8081 (backend path /accounts)
+  ok   POST /accounts/1.0.0/transfers -> 200 from v1 pod-b-vm 8081 (backend path /transfers)
+  ok   POST /accounts/1.0.0/transfers/instant -> 200 from v1 pod-b-vm 8081 (backend path /transfers/instant)
+  ok   GET /accounts-rewrite/1.0.0/accounts -> 200 from v1 pod-b-vm 8081 (backend path /legacy/accounts)
+== the same backend call (GET /accounts) through three public routes
+  ok   GET /accounts/1.0.0/accounts -> same backend call: /accounts on v1 pod-b-vm 8081
+  ok   GET /accounts/1.0.0/balances -> same backend call: /accounts on v1 pod-b-vm 8081
+  ok   GET /accounts/1.0.0/customer/accounts -> same backend call: /accounts on v1 pod-b-vm 8081
+POD 4.8 PASSED

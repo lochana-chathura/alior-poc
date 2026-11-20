@@ -200,9 +200,11 @@ In short, the most specific route wins and the order of routes doesn't matter.
 
 ### 4.8 Several routes to one microservice
 **Ask.** More than one route leads to the same microservice.
-**How we do it.** Three operations of `accounts` (`GET /accounts`, `POST /transfers`, `POST /transfers/instant`) and a second API with its own context (`/accounts-rewrite/1.0.0/accounts`) all point at mock v1.
-**How to show it.** Run `make test POD=4.8`. All four answers come from the same backend (v1 on pod-b-vm:8081).
-**Proof.** `tests/pod-4.8.sh`, `evidence/4.8/`.
+**How we do it.** Two cases, both in one API where possible.
+- **One service behind several routes.** Three operations of `accounts` (`GET /accounts`, `POST /transfers`, `POST /transfers/instant`) use the API's single endpoint, mock v1 on the VM. A second API with its own context (`/accounts-rewrite/1.0.0/accounts`) points at the same service too.
+- **The same backend call through several public routes.** `accounts` also has `GET /balances` and `GET /customer/accounts` (added 2026-11-20). Each carries a route-level `request-rewrite` (`ReplacePrefixMatch` to `/accounts`). So `/accounts`, `/balances` and `/customer/accounts` all land on the backend's `GET /accounts`. The public paths are decoupled from the backend path.
+**How to show it.** Run `make test POD=4.8`. All answers come from the same backend (v1 on pod-b-vm:8081), and the three GET routes all show backend path `/accounts`. In the Publisher, show `accounts` **Resources** (five routes), **Endpoints** (one endpoint) and **Policies** on `GET /balances`.
+**Proof.** `tests/pod-4.8.sh`, `evidence/4.8/`. Passed 2026-11-20.
 **Status.** Ready.
 
 ### 4.9 Sticky sessions
