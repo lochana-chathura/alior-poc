@@ -159,7 +159,7 @@ The answer is 200 from mock v1. A path that isn't published (`/nope/1.0.0/accoun
             timeouts:
               route_timeout_ms: 30000
 ```
-Argo CD applies the change and the gateway operator restarts the gateway pods one at a time, so traffic keeps flowing. On 2026-11-20 the change was live in both regions in about 2 minutes. The live value can be read in the cluster with `kubectl -n wso2-gw get cm pod-a-gw-gw-gateway-config -o yaml | grep route_timeout_ms`. Front Door's timeout is set in `infra/azure/frontdoor.sh`.
+Argo CD applies the change and the gateway operator restarts the gateway pods one at a time, so traffic keeps flowing. On 2026-11-20 the change was live in both regions in about 2 minutes. The live value can be read in the cluster with `kubectl -n wso2-gw get cm pod-a-gw-gw-gateway-config -o yaml | grep route_timeout_ms`. Front Door's timeout is set in `infra/azure/frontdoor.sh`. A Front Door change takes much longer: on 2026-11-20 the new 60 second limit needed about 20 to 25 minutes to reach all Front Door servers, so make such changes well before a demo.
 **How to show it.**
 1. Show the setting in Git (GitHub, `gateway-values.yaml`).
 2. Call through Front Door with the header `x-mock-delay-ms: 35000`. The answer is 504 `upstream request timeout` after 30 seconds, a plain text body with the gateway's `x-request-id`. An HTML page with `OriginTimeout` would mean Front Door answered instead.
