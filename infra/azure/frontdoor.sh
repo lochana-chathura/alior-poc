@@ -10,6 +10,8 @@ IP_A=$(ip a); IP_B=$(ip b)
 echo "origins: region A $IP_A, region B $IP_B"
 
 exists afd profile show -g $RG --profile-name pod-afd || az afd profile create -g $RG --profile-name pod-afd --sku Premium_AzureFrontDoor --tags $TAGS -o none
+# origin timeout above the gateways' route_timeout_ms (30 s, PoD 4.3), so the gateway's 504 reaches the client and not Front Door's
+az afd profile update -g $RG --profile-name pod-afd --origin-response-timeout-seconds 60 -o none
 exists afd endpoint show -g $RG --profile-name pod-afd --endpoint-name pod-api || az afd endpoint create -g $RG --profile-name pod-afd --endpoint-name pod-api --enabled-state Enabled -o none
 # health probe: the runtime's readiness path, HTTPS on 8443, both regions in one group with equal weight (active-active)
 exists afd origin-group show -g $RG --profile-name pod-afd --origin-group-name gateways || az afd origin-group create -g $RG --profile-name pod-afd --origin-group-name gateways \
