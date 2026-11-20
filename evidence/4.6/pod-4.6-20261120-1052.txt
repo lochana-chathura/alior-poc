@@ -1,0 +1,37 @@
+== 2026-11-20T05:22:48Z  client calls GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts/1.0.0/accounts
+# 2026-11-20T05:22:49Z  GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts/1.0.0/accounts
+HTTP/2 200 
+date: Fri, 20 Nov 2026 05:22:49 GMT
+content-type: application/json
+content-length: 173
+x-mock-version: v1
+x-envoy-upstream-service-time: 4
+x-pod-gateway: wso2-api-platform-gateway
+x-request-id: 94124ee4-9d8f-4eb2-98aa-d7fea6d0a998
+x-azure-ref: 20261120T052249Z-r15794d8f9cqzsgshC1MAA5rnw000000435g000000008fca
+x-cache: CONFIG_NOCACHE
+accept-ranges: bytes
+
+{"service": "mock", "version": "v1", "path": "/accounts", "method": "GET", "host": "pod-b-vm", "port": 8081, "body_bytes": 0, "body_md5": null, "ts": "2026-11-20T05:22:49Z"}
+  client sent : /accounts/1.0.0/accounts
+  backend got : /accounts
+  ok   prefix /accounts/1.0.0 stripped before the backend
+  ok   backend path differs from the client path
+== client calls GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts-rewrite/1.0.0/accounts (request-rewrite policy on the API)
+# 2026-11-20T05:22:50Z  GET https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/accounts-rewrite/1.0.0/accounts
+HTTP/2 200 
+date: Fri, 20 Nov 2026 05:22:50 GMT
+content-type: application/json
+content-length: 180
+x-mock-version: v1
+x-envoy-upstream-service-time: 39
+x-request-id: 09456012-8a01-4650-89a1-ea7ec859cdba
+x-azure-ref: 20261120T052249Z-r15794d8f9cskmzrhC1MAAdakg00000044q0000000000xk6
+x-cache: CONFIG_NOCACHE
+accept-ranges: bytes
+
+{"service": "mock", "version": "v1", "path": "/legacy/accounts", "method": "GET", "host": "pod-b-vm", "port": 8081, "body_bytes": 0, "body_md5": null, "ts": "2026-11-20T05:22:50Z"}
+  client sent : /accounts-rewrite/1.0.0/accounts
+  backend got : /legacy/accounts
+  ok   configured rewrite: /accounts forwarded as /legacy/accounts
+POD 4.6 PASSED
