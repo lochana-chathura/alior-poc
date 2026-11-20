@@ -1,0 +1,19 @@
+== 2026-11-20T09:31:18Z  overlapping routes on https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/routes/1.0.0
+  client /transfers               backend /matched
+  ok   /transfers matched its own exact route
+  client /transfers/instant       backend /matched
+  ok   /transfers/instant matched the exact route, not the wildcard listed before it
+  client /transfers/other         backend /matched/other
+  ok   /transfers/other fell through to the wildcard /transfers/*
+  client /transfers/instant/x     backend /matched/instant/x
+  ok   /transfers/instant/x is deeper than the exact route, so the wildcard took it
+== overlapping URLs on different services: https://pod-api-guf3bbbjh5htgxfu.a02.azurefd.net/1.0.0/transfers...
+  client /1.0.0/transfers               service v1 /transfers
+  ok   /transfers goes to the transfers service (mock v1)
+  client /1.0.0/transfers/instant       service v2 /transfers/instant
+  ok   /transfers/instant goes to its own service (mock v2), although the transfers wildcard also matches
+  client /1.0.0/transfers/other         service v1 /transfers/other
+  ok   /transfers/other has no specific API, so the transfers service takes it
+  client /1.0.0/transfers/instant/x     service v2 /transfers/instant/x
+  ok   /transfers/instant/x stays with the instant service
+POD 4.7 PASSED

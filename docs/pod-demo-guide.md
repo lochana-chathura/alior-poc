@@ -195,8 +195,19 @@ Argo CD applies the change and the gateway operator restarts the gateway pods on
 In short, the most specific route wins and the order of routes doesn't matter.
 **How to show it.** Run `make test POD=4.7`.
 **Proof.** `tests/pod-4.7.sh`, `evidence/4.7/`. Passed 2026-11-19.
-**Different backend per route (tried 2026-11-20, not possible yet).** The bank wants `/transfers` and `/transfers/instant` to go to different services. The gateway can do this with the `dynamic-endpoint` policy, which sends a route to a named backend from the API's `upstreamDefinitions` list. We tried it top-down on `routes` with update 23: we added mock v2 as a second named endpoint (`mock-v2`) in the Publisher and put `dynamic-endpoint` (`targetUpstream: mock-v2`) on `POST /transfers/instant`. The gateway received the policy, but the API it stored has only the main backend and no `upstreamDefinitions`, so the route answered 503. APIM 4.7.0.23 does not pass its extra endpoints to the API Platform gateway. The change was undone. To ask the APIM team.
-**Status.** Partly ready. Route priority works and is shown. A different backend per route is a gap in APIM 4.7.0.23 (top-down).
+**Overlapping URLs on different services (the bank's case, shown 2026-11-20).** The lead confirmed `/transfers` and `/transfers/instant` should go to different services. We do it with two APIs whose URLs overlap, each with its own backend:
+
+| API | Context | Routes | Backend |
+|---|---|---|---|
+| `transfers` | `/{version}/transfers` | `POST /`, `POST /*` | mock v1 (`http://10.20.16.4:8081/transfers`) |
+| `transfers-instant` | `/{version}/transfers/instant` | `POST /`, `POST /*` | mock v2 (`http://10.20.16.4:8082/transfers/instant`) |
+
+`/1.0.0/transfers/instant` matches both APIs, because the `transfers` wildcard also covers it. The gateway picks the more specific one, `transfers-instant`, so it goes to mock v2. `/1.0.0/transfers` and `/1.0.0/transfers/other` go to mock v1. The result is the same whichever API was deployed last. The version is placed first in the context (`{version}` in the Publisher) so that the two URLs really overlap.
+**What does not work, and why.**
+- A different backend per route inside one API. The gateway's `dynamic-endpoint` policy needs a list of named backends (`upstreamDefinitions`). We added a second endpoint in the Publisher and the policy reached the gateway, but APIM 4.7.0.23 does not send the extra endpoint, so the route answered 503. Neither APIM 4.7.0.23 nor the gateway controller has code for it. Undone.
+- Calls without the version in the URL. APIM's "default version" has no effect on the API Platform gateway, whose API context always holds the version. Versionless calls get 404.
+**How to show it.** Run `make test POD=4.7`. Part 1 shows the route priority inside one API, part 2 the two services. In the Publisher, show the two APIs, their contexts and their endpoints.
+**Status.** Ready. The bank's case works with two APIs. One API with a different backend per route is a gap in APIM 4.7.0.23, optional to raise with the APIM team.
 
 ### 4.8 Several routes to one microservice
 **Ask.** More than one route leads to the same microservice.
@@ -286,6 +297,8 @@ These were created on 2026-11-19 through the Publisher REST API, so they don't t
 |---|---|---|---|
 | `routes` 1.0.0 | `/routes` | mock v1 | 4.7 (and 2.5 audit example) |
 | `nobackend` 1.0.0 | `/nobackend` | closed port 10.20.16.4:8099 | 4.3 |
+| `transfers` 1.0.0 | `/{version}/transfers` | mock v1, `http://10.20.16.4:8081/transfers` | 4.7 |
+| `transfers-instant` 1.0.0 | `/{version}/transfers/instant` | mock v2, `http://10.20.16.4:8082/transfers/instant` | 4.7 |
 | `system-a` 1.0.0 | `/system-a` | mock v1, gateway A only | 2.2 |
 | `accounts` 2.0.0 | `/accounts` | mock v2 | 2.3 |
 
