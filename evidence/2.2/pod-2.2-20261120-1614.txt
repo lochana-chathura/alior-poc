@@ -1,0 +1,19 @@
+== 2026-11-20T10:49:59Z  gateways registered in the control plane (Admin REST API)
+  pod-a-gw   Alior PoD region a platform gateway           active=True visibility=PUBLIC
+  pod-b-gw   Alior PoD region b platform gateway           active=True visibility=PUBLIC
+== where each API is deployed
+  accounts   -> pod-a-gw, pod-b-gw
+  system-a   -> pod-a-gw
+== 8 calls to system-a through Front Door, matched to the gateway that served each
+  call 1 -> HTTP 200 from region A
+  call 2 -> HTTP 200 from region A
+  call 3 -> HTTP 404 from region B
+  call 4 -> HTTP 404 from region B
+  call 5 -> HTTP 200 from region A
+  call 6 -> HTTP 200 from region A
+  call 7 -> HTTP 200 from region A
+  call 8 -> HTTP 200 from region A
+  ok   region A (has system-a) answered 200 on 6 calls
+  ok   region B (system-a not deployed) answered 404 on 2 calls
+POD 2.2 PASSED
+tests/pod-2.2.sh: line 34:  4166 Terminated: 15          kubectl --context pod-a-aks -n wso2-cp port-forward svc/apim-wso2am-all-in-one-am-service $port:9443 > /dev/null 2>&1
